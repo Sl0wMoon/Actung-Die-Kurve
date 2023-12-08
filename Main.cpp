@@ -9,10 +9,14 @@ int main(int argc, char* argv[]) {
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
     SDL_Event event;
     Snake achtung;
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     bool ingame = true;
+    float fps = 120;
+    float delta_fps = 1000.0f / fps;
     while (ingame == true) {
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
+        int frame_time_start = SDL_GetTicks();
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_KEYDOWN) {
                 if (event.key.keysym.sym == SDLK_LEFT) {
@@ -32,19 +36,25 @@ int main(int argc, char* argv[]) {
                     achtung.turnfwd();
             }
         }
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-        if (achtung.get_turn() != 0) {
-            achtung.steer();
-        }
+        
+        achtung.steer();
+        achtung.check_collision(window);
         achtung.move();
         achtung.draw_snake(renderer);
         SDL_RenderPresent(renderer);
-        if (achtung.get_turn() == 1)
-            std::cout << "turning left" << std::endl;
-        if (achtung.get_turn() == -1)
-            std::cout << "turning right" << std::endl;
-
-        SDL_Delay(8);
+        //if (achtung.get_turn() == 1)
+            //std::cout << "turning left" << std::endl;
+        //if (achtung.get_turn() == -1)
+            //std::cout << "turning right" << std::endl;
+        /*if (SDL_GetTicks() % 100 == 0) {
+            std::cout << 1000.0 / (SDL_GetTicks() - frame_time_start) << "FPS" << std::endl;
+        }*/
+        if (SDL_GetTicks() - frame_time_start < delta_fps) {
+            SDL_Delay(delta_fps - (SDL_GetTicks() - frame_time_start));
+        }
+        if (!achtung.is_alive()) {
+            ingame = false;
+        }
     }
 	return 0;
 }
