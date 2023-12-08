@@ -42,6 +42,14 @@ int main(int argc, char* argv[]) {
         achtung.move();
         achtung.draw_snake(renderer);
         SDL_RenderPresent(renderer);
+
+        if (achtung.get_turn() == 1)
+            std::cout << "turning left" << std::endl;
+        if (achtung.get_turn() == -1)
+            std::cout << "turning right" << std::endl;
+
+        SDL_Delay(8);
+
         //if (achtung.get_turn() == 1)
             //std::cout << "turning left" << std::endl;
         //if (achtung.get_turn() == -1)
@@ -55,6 +63,7 @@ int main(int argc, char* argv[]) {
         if (!achtung.is_alive()) {
             ingame = false;
         }
+
     }
 	return 0;
 }
