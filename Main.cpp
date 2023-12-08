@@ -45,6 +45,7 @@ int main(int argc, char* argv[]) {
             std::cout << "turning right" << std::endl;
 
         SDL_Delay(8);
+        std::cout << "FUCK U";
     }
 	return 0;
 }
