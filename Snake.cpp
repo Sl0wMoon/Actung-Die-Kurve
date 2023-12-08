@@ -239,10 +239,12 @@ std::vector<Uint32>* Snake::find_color(SDL_Window* window, Twod pos) {
     int x = pos.x, y = pos.y;
     Uint32* c = new Uint32;   
     SDL_Color color = { -1, -1, -1, -1 };
+
     auto renderer = SDL_GetRenderer(window);
     auto surface = SDL_GetWindowSurface(window);
-    SDL_RenderReadPixels(renderer, new SDL_Rect({ x, y , 1, 1 }), SDL_PIXELFORMAT_RGB888, c, surface->format->BytesPerPixel);
-    SDL_GetRGB(*(Uint32*)c, surface->format, &color.r,  &color.g, &color.b);
+    auto src = SDL_Rect({ x, y , 1, 1 });
+    SDL_RenderReadPixels(renderer, &src, SDL_PIXELFORMAT_RGB888, c, surface->format->BytesPerPixel);
+    SDL_GetRGB(*c, surface->format, &color.r,  &color.g, &color.b);
     auto vector = new std::vector<Uint32>();
     vector->push_back(color.r);
     vector->push_back(color.g);
