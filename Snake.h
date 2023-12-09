@@ -46,14 +46,13 @@ private:
 	double degreetorad(int degree);
 	Twod position;
 	Twod previous_position;
-	Twod next_position;
 	float amplitude;
 	Twod speed;
 	int steer_amount;
 	int steer_multiplier;
 	//Twod anchor;
 	int draw_circle(SDL_Renderer* renderer, Twod point);
-	std::vector<Uint32>* find_color(SDL_Window* window, Twod pos);
+	std::vector<Uint32> find_color(SDL_Window* window, Twod pos);
 	//std::vector<Curve> trail; mentioned since I am no longer going to render the trail each frame.
 	//void add_to_tail();
 	//int draw_tail_part(SDL_Renderer* renderer, int posx, int posy);

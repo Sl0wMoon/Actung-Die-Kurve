@@ -12,8 +12,6 @@ Snake::Snake(int heading, int xposition, int yposition) {
 	amplitude = 1.5;
 	speed.x = std::sin(degreetorad(heading)) * amplitude;
 	speed.y = std::cos(degreetorad(heading)) * amplitude;
-    next_position.x = position.x + speed.x;
-    next_position.y = position.y + speed.y;
 	steer_amount = 0;
 	steer_multiplier = 1;
 	size = 3;
@@ -32,8 +30,6 @@ Snake::Snake() {
 	amplitude = 1.5;
 	speed.x = std::sin(degreetorad(heading)) * amplitude;
 	speed.y = std::cos(degreetorad(heading)) * amplitude;
-    next_position.x = position.x + speed.x;
-    next_position.y = position.y + speed.y;
 	steer_amount = 0;
 	steer_multiplier = 1;
     //anchor = Twod(800, 450);
@@ -44,8 +40,6 @@ void Snake::steer() {
 	heading += steer_amount;
     speed.x = std::sin(degreetorad(heading)) * amplitude;
 	speed.y = std::cos(degreetorad(heading)) * amplitude;
-    next_position.x += position.x + speed.x;
-    next_position.y += position.y + speed.y;
 }
 
 
@@ -137,7 +131,7 @@ int Snake::draw_circle(SDL_Renderer* renderer, Twod point){
 
 
 double Snake::degreetorad(int degree) {
-    double rad = (degree * 3.14159) / 180;
+    double rad = (degree * 3.141592653) / 180;
     return rad;
 }
 
@@ -227,28 +221,31 @@ Twod Snake::get_pos() {
 
 
 void Snake::check_collision(SDL_Window* window) {
-    /*if (find_color(window, Twod(next_position.x + 3, next_position.y))[0] > 100)*/
-
-    if ((*find_color(window, Twod(position.x, position.y)))[0] > 100)
-       alive = false;
+    for (int i = 0; i < 8; i++) {
+        int direction = 360 * i/8 + heading;
+        Twod check_vect = { std::sin(degreetorad(direction)) * size , std::cos(degreetorad(direction)) * size };
+        std::vector<Uint32> color = find_color(window, { position.x + check_vect.x , position.y + check_vect.y });
+        if (color[0] != 0 || color[1] != 0 || color[2] != 0) {
+            alive = false;
+        }
+    }
 }
 
 
 
-std::vector<Uint32>* Snake::find_color(SDL_Window* window, Twod pos) {
-    int x = pos.x, y = pos.y;
-    Uint32* c = new Uint32;   
+std::vector<Uint32> Snake::find_color(SDL_Window* window, Twod pos) {
+    Uint32* pixel = new Uint32;   
     SDL_Color color = { -1, -1, -1, -1 };
 
     auto renderer = SDL_GetRenderer(window);
     auto surface = SDL_GetWindowSurface(window);
-    auto src = SDL_Rect({ x, y , 1, 1 });
-    SDL_RenderReadPixels(renderer, &src, SDL_PIXELFORMAT_RGB888, c, surface->format->BytesPerPixel);
-    SDL_GetRGB(*c, surface->format, &color.r,  &color.g, &color.b);
-    auto vector = new std::vector<Uint32>();
-    vector->push_back(color.r);
-    vector->push_back(color.g);
-    vector->push_back(color.b);
+    auto src = SDL_Rect({ int(pos.x), int(pos.y) , 1, 1 });
+    SDL_RenderReadPixels(renderer, &src, SDL_PIXELFORMAT_RGB888, pixel, surface->format->BytesPerPixel);
+    SDL_GetRGB(*pixel, surface->format, &color.r,  &color.g, &color.b);
+    auto vector = std::vector<Uint32>();
+    vector.push_back(color.r);
+    vector.push_back(color.g);
+    vector.push_back(color.b);
     return vector;
 }
 
