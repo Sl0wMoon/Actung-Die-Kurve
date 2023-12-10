@@ -20,25 +20,15 @@ int main(int argc, char* argv[]) {
     while (ingame == true) {
         int frame_time_start = SDL_GetTicks();
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_KEYDOWN) {
-                if (event.key.keysym.sym == SDLK_LEFT) {
-                    achtung.turnleft();
-                }
-                else if (event.key.keysym.sym == SDLK_RIGHT) {
-                    achtung.turnright();
-                }
-                else if (event.key.keysym.sym == SDLK_ESCAPE) {
+            switch (event.type) {
+            case SDL_KEYUP:
+                switch (event.key.keysym.sym) {
+                case SDLK_ESCAPE:
                     ingame = false;
                 }
             }
-            else if (event.type == SDL_KEYUP) {
-                if (event.key.keysym.sym == SDLK_LEFT && achtung.get_turn() == 1)
-                    achtung.turnfwd();
-                else if (event.key.keysym.sym == SDLK_RIGHT && achtung.get_turn() == -1)
-                    achtung.turnfwd();
-            }
         }
-
+        achtung.handle_input();
         achtung.steer();
         achtung.move();
         achtung.check_collision(window);
