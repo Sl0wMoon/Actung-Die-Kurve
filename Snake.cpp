@@ -10,8 +10,8 @@ Snake::Snake(int heading, int xposition, int yposition) {
     previous_position.x = xposition;
     previous_position.y = yposition;
 	amplitude = 1.5;
-	speed.x = std::sin(degreetorad(heading)) * amplitude;
-	speed.y = std::cos(degreetorad(heading)) * amplitude;
+	speed.x = std::cos(degreetorad(heading)) * amplitude;
+	speed.y = std::sin(degreetorad(heading)) * amplitude;
 	steer_amount = 0;
 	steer_multiplier = 1;
 	size = 3;
@@ -32,38 +32,36 @@ Snake::Snake() {
     previous_position.x = 800;
     previous_position.y = 450;
 	amplitude = 1.5;
-	speed.x = std::sin(degreetorad(heading)) * amplitude;
-	speed.y = std::cos(degreetorad(heading)) * amplitude;
+	speed.x = std::cos(degreetorad(heading)) * amplitude;
+	speed.y = std::sin(degreetorad(heading)) * amplitude;
 	steer_amount = 0;
 	steer_multiplier = 1;
     color = { 255, 0, 0 };
     head_color = { 255, 255, 0 };
     right_key = 79;
     left_key = 80;
-    //anchor = Twod(800, 450);
 }
 
 
 void Snake::steer() {
 	heading += steer_amount;
-    speed.x = std::sin(degreetorad(heading)) * amplitude;
-	speed.y = std::cos(degreetorad(heading)) * amplitude;
+    speed.x = std::cos(degreetorad(heading)) * amplitude;
+	speed.y = std::sin(degreetorad(heading)) * amplitude;
+}
+
+
+Twod Snake::make_heading_vect(int heading) {
+    return Twod(std::cos(degreetorad(heading)), std::sin(degreetorad(heading)));
 }
 
 
 void Snake::turn_left() {
-    /*if (get_turn() <= 0) {
-        add_to_tail();
-    }*/
-	steer_amount = 1 * steer_multiplier;
+	steer_amount = -1 * steer_multiplier;
 }
 
 
 void Snake::turn_right() {
-    /*if (get_turn() >= 0) {
-        add_to_tail();
-    }*/
-	steer_amount = -1 * steer_multiplier;
+	steer_amount = 1 * steer_multiplier;
 }
 
 
@@ -75,9 +73,6 @@ void Snake::move() {
 
 
 void Snake::turn_fwd() {
-    /*if (get_turn() != 0) {
-        add_to_tail();
-    }*/
     steer_amount = 0;
 }
 
@@ -94,8 +89,8 @@ int Snake::get_turn() {
 int Snake::draw_circle(SDL_Renderer* renderer, Twod point){
     int offsetx, offsety, d;
     int status;
-    int x = point.x;
-    int y = point.y;
+    int x = round(point.x);
+    int y = round(point.y);
     int radius = size;
 
     offsetx = 0;
@@ -139,7 +134,7 @@ int Snake::draw_circle(SDL_Renderer* renderer, Twod point){
 
 
 double Snake::degreetorad(int degree) {
-    double rad = (degree * 3.141592653) / 180;
+    double rad = (degree * M_PI) / 180;
     return rad;
 }
 
@@ -162,11 +157,8 @@ double Snake::degreetorad(int degree) {
 
 
 void Snake::draw_snake(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
-    draw_circle(renderer, previous_position);
     SDL_SetRenderDrawColor(renderer, head_color.r, head_color.g, head_color.b, 255);
     draw_circle(renderer, position);
-    //draw_tail(renderer);
 }
 
 
@@ -231,13 +223,11 @@ Twod Snake::get_pos() {
 void Snake::check_collision(SDL_Window* window) {
     for (int i = -1; i <= 1; i++) {
         int direction = 360 * i/5 + heading;
-        Twod check_vect = { std::sin(degreetorad(direction)) * (size + 0.8) , std::cos(degreetorad(direction)) * (size + 0.8)};
+        Twod check_vect = { std::cos(degreetorad(direction)) * (size + 0.8) , std::sin(degreetorad(direction)) * (size + 0.8)};
         auto renderer = SDL_GetRenderer(window);
-        //SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        //SDL_RenderDrawPoint(renderer, position.x + check_vect.x, position.y + check_vect.y);
         SDL_Color color = find_color(window, { position.x + check_vect.x , position.y + check_vect.y });
         if (color.r != 0 || color.g != 0 || color.b != 0) {
-            alive = false;
+            //alive = false;
             return;
         }
     }
@@ -268,13 +258,14 @@ const bool Snake::is_alive() {
 void Snake::handle_input() {
     auto keystates = SDL_GetKeyboardState(NULL);
 
-    if (keystates[left_key] && !(get_turn() == 1)) {
+    if (keystates[left_key] && !(get_turn() == -1)) {
         turn_left();
     }
-    if (keystates[right_key] && !(get_turn() == -1)) {
+    if (keystates[right_key] && !(get_turn() == 1)) {
         turn_right();
     }
     if (keystates[right_key] + keystates[left_key] == 0) {
         turn_fwd();
     }
 }
+

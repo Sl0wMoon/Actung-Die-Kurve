@@ -14,35 +14,21 @@ struct Twod {
 		x = px;
 		y = py;
 	}
+	Twod operator+(const Twod & other) const {
+		Twod result;
+		result.x = this->x + other.x;
+		result.y = this->y + other.y;
+		return result;
+	}
 };
 
-/*struct Curve {
-	Twod a;
-	Twod b;
-	int spd;
-	int steer;
-	int direction;
-	Curve() {
-		a = Twod(0, 0);
-		b = Twod(0, 0);
-		spd = 0;
-		steer = 0;
-		direction = 0;
-	}
-	Curve(Twod first, Twod second, int speed, int direct, int str) {
-		a = first;
-		b = second;
-		spd = speed;
-		steer = str;
-		direction = direct;
-	}
-};*/
 
 class Snake
 {
 private:
 	SDL_Color color;
 	SDL_Color head_color;
+	SDL_Texture* filled_texture;
 	int left_key;
 	int right_key;
 	bool alive;
@@ -54,6 +40,7 @@ private:
 	Twod speed;
 	int steer_amount;
 	int steer_multiplier;
+	Twod make_heading_vect(int heading);
 	//Twod anchor;
 	int draw_circle(SDL_Renderer* renderer, Twod point);
 	SDL_Color find_color(SDL_Window* window, Twod pos);

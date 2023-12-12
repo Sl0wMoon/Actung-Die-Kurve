@@ -50,6 +50,7 @@ int main(int argc, char* argv[]) {
         if (!achtung.is_alive()) {
             ingame = false;
         }
+        SDL_Delay(20);
     }
     return 0;
 }
