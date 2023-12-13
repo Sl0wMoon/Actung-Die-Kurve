@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
                 }
             }
         }
-        achtung.handle_input();
+        achtung.handle_input(renderer);
         achtung.steer();
         achtung.move();
         achtung.check_collision(window);

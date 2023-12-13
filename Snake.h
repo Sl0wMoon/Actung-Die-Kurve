@@ -26,7 +26,8 @@ struct Twod {
 class Snake
 {
 private:
-	SDL_Color color;
+	SDL_Color snake_color;
+	SDL_Color trail_color;
 	SDL_Color head_color;
 	SDL_Texture* filled_texture;
 	int left_key;
@@ -41,18 +42,16 @@ private:
 	int steer_amount;
 	int steer_multiplier;
 	Twod make_heading_vect(int heading);
-	//Twod anchor;
+	void draw_rotated_rect(SDL_Renderer* renderer, SDL_Rect rect, double angle);
+	void stop_draw(SDL_Renderer * renderer);
+	void start_draw(SDL_Renderer* renderer);
 	int draw_circle(SDL_Renderer* renderer, Twod point);
 	SDL_Color find_color(SDL_Window* window, Twod pos);
-	//std::vector<Curve> trail; mentioned since I am no longer going to render the trail each frame.
-	//void add_to_tail();
-	//int draw_tail_part(SDL_Renderer* renderer, int posx, int posy);
-	//void draw_tail(SDL_Renderer* renderer);
 public:
-	Snake(int heading, int xposition, int yposition);
+	Snake(int heading, int xposition, int yposition, SDL_Color snake_color);
 	Snake();
 	void check_collision(SDL_Window* window);
-	void handle_input();
+	void handle_input(SDL_Renderer * renderer);
 	void steer();
 	void turn_left();
 	void turn_right();
