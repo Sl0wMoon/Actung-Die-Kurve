@@ -29,7 +29,6 @@ private:
 	SDL_Color snake_color;
 	SDL_Color trail_color;
 	SDL_Color head_color;
-	SDL_Texture* filled_texture;
 	int left_key;
 	int right_key;
 	bool alive;
@@ -48,7 +47,7 @@ private:
 	int draw_circle(SDL_Renderer* renderer, Twod point);
 	SDL_Color find_color(SDL_Window* window, Twod pos);
 public:
-	Snake(int heading, int xposition, int yposition, SDL_Color snake_color);
+	Snake(int heading, int xposition, int yposition, SDL_Color snake_color, int left, int right);
 	Snake();
 	void check_collision(SDL_Window* window);
 	void handle_input(SDL_Renderer * renderer);

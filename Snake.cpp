@@ -2,14 +2,14 @@
 
 
 
-Snake::Snake(int heading, int xposition, int yposition, SDL_Color snake_color) {
+Snake::Snake(int heading, int xposition, int yposition, SDL_Color snake_color, int left, int right) {
     alive = true;
 	Snake::heading = heading;
 	position.x = xposition;
 	position.y = yposition;
     previous_position.x = xposition;
     previous_position.y = yposition;
-	amplitude = 1.5;
+	amplitude = 3;
 	speed.x = std::cos(degreetorad(heading)) * amplitude;
 	speed.y = std::sin(degreetorad(heading)) * amplitude;
 	steer_amount = 0;
@@ -18,8 +18,8 @@ Snake::Snake(int heading, int xposition, int yposition, SDL_Color snake_color) {
     Snake::snake_color = snake_color;
     trail_color = snake_color;
     head_color = { 255, 255, 0 };
-    right_key = 79;
-    left_key = 80;
+    right_key = right;
+    left_key = left;
 }
 
 
@@ -31,7 +31,7 @@ Snake::Snake() {
 	position.y = 450;
     previous_position.x = 800;
     previous_position.y = 450;
-	amplitude = 1.5;
+	amplitude = 3;
 	speed.x = std::cos(degreetorad(heading)) * amplitude;
 	speed.y = std::sin(degreetorad(heading)) * amplitude;
 	steer_amount = 0;
@@ -57,12 +57,12 @@ Twod Snake::make_heading_vect(int heading) {
 
 
 void Snake::turn_left() {
-	steer_amount = -1 * steer_multiplier;
+	steer_amount = -2 * steer_multiplier;
 }
 
 
 void Snake::turn_right() {
-	steer_amount = 1 * steer_multiplier;
+	steer_amount = 2 * steer_multiplier;
 }
 
 
@@ -159,8 +159,8 @@ void Snake::start_draw(SDL_Renderer* renderer) {
     trail_color = snake_color;
     draw_snake(renderer);
     Twod normal = { speed.y * size / amplitude , -speed.x * size / amplitude };
-    SDL_Rect cutoff = { position.x + normal.x * 1.5 + speed.x * -2, position.y + normal.y * 1.5 + speed.y * -2, size * 4, size + amplitude + 10 };
-    trail_color = { 0, 0, 0, 0 };
+    SDL_Rect cutoff = { position.x + normal.x * 2 + speed.x * -2, position.y + normal.y * 2 + speed.y * -2, size * 3.75, size + amplitude + 10 };
+    trail_color = { 0, 0, 0, 255 };
     draw_rotated_rect(renderer, cutoff, heading);
     trail_color = snake_color;
 }
@@ -174,11 +174,11 @@ Twod Snake::get_pos() {
 void Snake::check_collision(SDL_Window* window) {
     for (int i = -1; i <= 1; i++) {
         int direction = 360 * i/5 + heading;
-        Twod check_vect = { std::cos(degreetorad(direction)) * (size + 0.8) , std::sin(degreetorad(direction)) * (size + 0.8)};
+        Twod check_vect = { std::cos(degreetorad(direction)) * (size * 1.5) , std::sin(degreetorad(direction)) * (size * 1.5)};
         auto renderer = SDL_GetRenderer(window);
         SDL_Color color = find_color(window, { position.x + check_vect.x , position.y + check_vect.y });
         if (color.r != 0 || color.g != 0 || color.b != 0) {
-            //alive = false;
+            alive = false;
             return;
         }
     }
