@@ -241,3 +241,4 @@ void Snake::draw_rotated_rect(SDL_Renderer* renderer, SDL_Rect rect, double angl
     // Render the filled rotated rectangle
     SDL_RenderCopyEx(renderer, filledTexture, nullptr, &dstRect, angle, &rotationPoint, SDL_FLIP_NONE);
 }
+

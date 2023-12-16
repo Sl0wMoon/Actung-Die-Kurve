@@ -27,6 +27,7 @@ int main(int argc, char* argv[]) {
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     bool ingame = true;
+    bool paused = true;
     float fps = 60;
     float delta_fps = 1000.0f / fps;
 
@@ -38,24 +39,38 @@ int main(int argc, char* argv[]) {
                 switch (event.key.keysym.sym) {
                 case SDLK_ESCAPE:
                     ingame = false;
+                case SDLK_SPACE:
+                    paused = !paused;
                 }
             }
         }
-        for (auto it = snake_vector.begin(); it != snake_vector.end(); it++) {
-            it->handle_input(renderer);
-            it->steer();
-            it->move();
-            it->check_collision(window);
-            it->draw_snake(renderer);
-            if (!it->is_alive()) {
-                ingame = false;
+        for (int i = 0; i < snake_vector.size(); i++) {
+            snake_vector[i].handle_input(renderer);
+            snake_vector[i].steer();
+            snake_vector[i].move();
+            snake_vector[i].check_collision(window);
+            snake_vector[i].draw_snake(renderer);
+            if (!snake_vector[i].is_alive()) {
+                snake_vector.erase(snake_vector.begin() + i);
             }
         }
         if (SDL_GetTicks() - frame_time_start < delta_fps) {
             SDL_Delay(delta_fps - (SDL_GetTicks() - frame_time_start));
         }
         SDL_RenderPresent(renderer);
-        
+        while (paused && ingame) {
+            while (SDL_PollEvent(&event)) {
+                switch (event.type) {
+                case SDL_KEYUP:
+                    switch (event.key.keysym.sym) {
+                    case SDLK_ESCAPE:
+                        ingame = false;
+                    case SDLK_SPACE:
+                        paused = !paused;
+                    }
+                }
+            }
+        }
     }
     return 0;
 }
