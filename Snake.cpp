@@ -20,6 +20,7 @@ Snake::Snake(int heading, int xposition, int yposition, SDL_Color snake_color, i
     head_color = { 255, 255, 0 };
     right_key = right;
     left_key = left;
+    kurve_anchor = position;
 }
 
 
@@ -41,6 +42,7 @@ Snake::Snake() {
     head_color = { 255, 255, 0 };
     right_key = 79;
     left_key = 80;
+    kurve_anchor = position;
 }
 
 
@@ -57,12 +59,23 @@ Twod Snake::make_heading_vect(int heading) {
 
 
 void Snake::turn_left() {
+    add_tail();
+    kurve_anchor = position;
 	steer_amount = -2 * steer_multiplier;
 }
 
 
 void Snake::turn_right() {
+    add_tail();
+    kurve_anchor = position;
 	steer_amount = 2 * steer_multiplier;
+}
+
+
+void Snake::turn_fwd() {
+    add_tail();
+    kurve_anchor = position;
+    steer_amount = 0;
 }
 
 
@@ -70,11 +83,6 @@ void Snake::move() {
     previous_position = position;
 	position.x += speed.x;
 	position.y += speed.y;
-}
-
-
-void Snake::turn_fwd() {
-    steer_amount = 0;
 }
 
 
@@ -172,7 +180,7 @@ Twod Snake::get_pos() {
 
 
 void Snake::check_collision(SDL_Window* window) {
-    for (int i = -1; i <= 1; i += 2) {
+    for (int i = -1; i <= 1; i++) {
         int direction = 360 * i/5 + heading;
         Twod check_vect = { std::cos(degreetorad(direction)) * (size * 1.5) , std::sin(degreetorad(direction)) * (size * 1.5)};
         auto renderer = SDL_GetRenderer(window);
@@ -195,6 +203,7 @@ SDL_Color Snake::find_color(SDL_Window* window, Twod pos) {
     auto src = SDL_Rect({ int(pos.x), int(pos.y) , 1, 1 });
     SDL_RenderReadPixels(SDL_GetRenderer(window), &src, SDL_PIXELFORMAT_RGB888, pixel, SDL_GetWindowSurface(window)->format->BytesPerPixel);
     SDL_GetRGB(*pixel, SDL_GetWindowSurface(window)->format, &color.r,  &color.g, &color.b);
+    delete pixel;
     return color;
 }
 
@@ -209,13 +218,13 @@ const bool Snake::is_alive() {
 void Snake::handle_input(SDL_Renderer* renderer) {
     auto keystates = SDL_GetKeyboardState(NULL);
 
-    if (keystates[left_key] && !(get_turn() == -1)) {
+    if (keystates[left_key] && !(get_turn() < 0)) {
         turn_left();
     }
-    if (keystates[right_key] && !(get_turn() == 1)) {
+    if (keystates[right_key] && !(get_turn() > 0)) {
         turn_right();
     }
-    if (keystates[right_key] + keystates[left_key] == 0) {
+    if (keystates[right_key] + keystates[left_key] == 0 && get_turn() != 0) {
         turn_fwd();
     }
     if (keystates[SDL_SCANCODE_BACKSPACE]) {
@@ -242,3 +251,39 @@ void Snake::draw_rotated_rect(SDL_Renderer* renderer, SDL_Rect rect, double angl
     SDL_RenderCopyEx(renderer, filledTexture, nullptr, &dstRect, angle, &rotationPoint, SDL_FLIP_NONE);
 }
 
+
+Twod Snake::get_radial_point(int turn) {
+    if (turn == 0) {
+        return { -INFINITY, -INFINITY };
+    }
+    float radius = amplitude / degreetorad(steer_amount % 360);
+    Twod normal;
+    if (turn < 0) {
+        normal = { radius*speed.y,radius* -speed.x };
+    }
+    else {
+        normal = { radius*-speed.y, radius*speed.x };
+    }
+    return position + normal;
+}
+
+
+double Snake::get_radius() {
+    if (steer_amount == 0) {
+        return -1.0;
+    }
+    double radius = amplitude / degreetorad(steer_amount % 360);
+    return radius;
+}
+
+
+void Snake::add_tail() {
+    tail.push_back({ kurve_anchor, position, get_radial_point(get_turn()), get_radius()});
+}
+
+
+void Snake::print_tail_size() {
+    if (tail.size() > 0) {
+        std::cout << "tail size is >>  " << tail.size() << std::endl;
+    }
+}

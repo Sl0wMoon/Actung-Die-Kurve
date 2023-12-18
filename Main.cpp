@@ -22,8 +22,8 @@ int main(int argc, char* argv[]) {
     Snake slow2(distribution(gen), distribution(gen), distribution(gen), {0, 255,0 ,255}, SDL_SCANCODE_A, SDL_SCANCODE_D);
     Snake slow3(distribution(gen), distribution(gen), distribution(gen), {0, 255,0 ,255}, SDL_SCANCODE_A, SDL_SCANCODE_D);
     std::vector<Snake> snake_vector;
-    snake_vector.push_back(kessel);
     snake_vector.push_back(achtung);
+    snake_vector.push_back(kessel);
     snake_vector.push_back(slow);
     snake_vector.push_back(slow2);
     snake_vector.push_back(slow3);
@@ -53,10 +53,11 @@ int main(int argc, char* argv[]) {
             snake_vector[i].steer();
             snake_vector[i].move();
             snake_vector[i].check_collision(window);
-            snake_vector[i].draw_snake(renderer);
             if (!snake_vector[i].is_alive()) {
                 snake_vector.erase(snake_vector.begin() + i);
+                continue;
             }
+            snake_vector[i].draw_snake(renderer);
         }
         if (SDL_GetTicks() - frame_time_start < delta_fps) {
             SDL_Delay(delta_fps - (SDL_GetTicks() - frame_time_start));
