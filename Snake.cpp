@@ -20,8 +20,6 @@ Snake::Snake(int heading, int xposition, int yposition, SDL_Color snake_color, i
     head_color = { 255, 255, 0 };
     right_key = right;
     left_key = left;
-    kurve_anchor = position;
-    add_tail();
 }
 
 
@@ -43,8 +41,6 @@ Snake::Snake() {
     head_color = { 255, 255, 0 };
     right_key = 79;
     left_key = 80;
-    kurve_anchor = position;
-    add_tail();
 }
 
 
@@ -61,22 +57,16 @@ Twod Snake::make_heading_vect(int heading) {
 
 
 void Snake::turn_left() {
-    add_tail();
-    kurve_anchor = position;
 	steer_amount = -2 * steer_multiplier;
 }
 
 
 void Snake::turn_right() {
-    add_tail();
-    kurve_anchor = position;
 	steer_amount = 2 * steer_multiplier;
 }
 
 
 void Snake::turn_fwd() {
-    add_tail();
-    kurve_anchor = position;
     steer_amount = 0;
 }
 
@@ -85,8 +75,7 @@ void Snake::move() {
     previous_position = position;
 	position.x += speed.x;
 	position.y += speed.y;
-    tail.pop_back();
-    add_tail();
+
 }
 
 
@@ -183,39 +172,36 @@ Twod Snake::get_pos() {
 }
 
 
-void Snake::check_collision(SDL_Window* window) {
-    for (int i = -1; i <= 1; i++) {
+void Snake::check_collision(SDL_Window* window, Uint32* pixel) {
+    for (int i = 0; i <= 1; i += 2) {
         int direction = 360 * i/5 + heading;
-        Twod check_vect = { std::cos(degreetorad(direction)) * (size * 1.5) , std::sin(degreetorad(direction)) * (size * 1.5)};
+        Twod check_vect = { std::cos(degreetorad(direction)) * (size * 2) , std::sin(degreetorad(direction)) * (size * 2)};
         auto renderer = SDL_GetRenderer(window);
-        SDL_Color color = find_color(window, { position.x + check_vect.x , position.y + check_vect.y });
+        SDL_Color color = find_color(window, { position.x + check_vect.x , position.y + check_vect.y }, pixel);
         if (color.r != 0 || color.g != 0 || color.b != 0) {
             alive = false;
             return;
         }
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_RenderDrawPoint(renderer, position.x + check_vect.x, position.y + check_vect.y);
     }
 }
 
 
 
-SDL_Color Snake::find_color(SDL_Window* window, Twod pos) {
-    Uint32* pixel = new Uint32;   
-    SDL_Color color = { -1, -1, -1, -1 };
-
-    //auto renderer = SDL_GetRenderer(window);
-    //auto surface = SDL_GetWindowSurface(window);
-    auto src = SDL_Rect({ int(pos.x), int(pos.y) , 1, 1 });
-    SDL_RenderReadPixels(SDL_GetRenderer(window), &src, SDL_PIXELFORMAT_RGB888, pixel, SDL_GetWindowSurface(window)->format->BytesPerPixel);
-    SDL_GetRGB(*pixel, SDL_GetWindowSurface(window)->format, &color.r,  &color.g, &color.b);
-    delete pixel;
+SDL_Color Snake::find_color(SDL_Window* window, Twod pos, Uint32* pixel) {
+    SDL_Color color = { 0, 0, 0, 255 };
+    int offset = pos.x + pos.y * 1600;
+    SDL_GetRGB(pixel[offset], SDL_GetWindowSurface(window)->format, &color.r, &color.g, &color.b);
+    if (color.r != 0 || color.g != 0 || color.b != 0) {
+        std::cout << "weird";
+    }
     return color;
 }
 
 
 const bool Snake::is_alive() {
-    if (alive)
-        return true;
-    return false;
+    return alive;
 }
 
 
@@ -255,39 +241,3 @@ void Snake::draw_rotated_rect(SDL_Renderer* renderer, SDL_Rect rect, double angl
     SDL_RenderCopyEx(renderer, filledTexture, nullptr, &dstRect, angle, &rotationPoint, SDL_FLIP_NONE);
 }
 
-
-Twod Snake::get_radial_point(int turn) {
-    if (turn == 0) {
-        return { -INFINITY, -INFINITY };
-    }
-    float radius = amplitude / degreetorad(steer_amount % 360);
-    Twod normal;
-    if (turn < 0) {
-        normal = { radius*speed.y,radius* -speed.x };
-    }
-    else {
-        normal = { radius*-speed.y, radius*speed.x };
-    }
-    return position + normal;
-}
-
-
-double Snake::get_radius() {
-    if (steer_amount == 0) {
-        return -1.0;
-    }
-    double radius = amplitude / degreetorad(steer_amount % 360);
-    return radius;
-}
-
-
-void Snake::add_tail() {
-    tail.push_back({ kurve_anchor, position, get_radial_point(get_turn()), get_radius()});
-}
-
-
-void Snake::print_tail_size() {
-    if (tail.size() > 0) {
-        std::cout << "tail size is >>  " << tail.size() << std::endl;
-    }
-}

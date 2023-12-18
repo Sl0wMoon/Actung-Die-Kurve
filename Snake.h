@@ -23,24 +23,6 @@ struct Twod {
 };
 
 
-struct Kurve {
-	Twod a;
-	Twod b;
-	Twod r;
-	double radius;
-	Kurve() {
-		a = { 0 ,0 };
-		b = { 0 ,0 };
-		r = { -INFINITY, -INFINITY };
-		radius = -1;
-	}
-	Kurve(Twod first, Twod second, Twod radial, double inrad) {
-		a = first;
-		b = second;
-		r = radial;
-		radius = inrad;
-	}
-};
 
 
 class Snake
@@ -56,7 +38,6 @@ private:
 	double degreetorad(int degree);
 	Twod position;
 	Twod previous_position;
-	Twod kurve_anchor;
 	float amplitude;
 	Twod speed;
 	int steer_amount;
@@ -69,16 +50,11 @@ private:
 	void start_draw(SDL_Renderer* renderer);
 
 	int draw_circle(SDL_Renderer* renderer, Twod point);
-	SDL_Color find_color(SDL_Window* window, Twod pos);
-
-	Twod get_radial_point(int turn);
-	double get_radius();
-	std::vector<Kurve> tail;
-	void add_tail();
+	SDL_Color find_color(SDL_Window* window, Twod pos, Uint32* pixel);
 public:
 	Snake(int heading, int xposition, int yposition, SDL_Color snake_color, int left, int right);
 	Snake();
-	void check_collision(SDL_Window* window);
+	void check_collision(SDL_Window* window, Uint32* pixel);
 	void handle_input(SDL_Renderer * renderer);
 	void steer();
 	void turn_left();
@@ -90,6 +66,5 @@ public:
 	int get_turn();
 	Twod get_pos();
 	void draw_snake(SDL_Renderer* renderer);
-	void print_tail_size();
 };
 
