@@ -172,7 +172,7 @@ Twod Snake::get_pos() {
 
 
 void Snake::check_collision(SDL_Window* window) {
-    for (int i = -1; i <= 1; i++) {
+    for (int i = -1; i <= 1; i += 2) {
         int direction = 360 * i/5 + heading;
         Twod check_vect = { std::cos(degreetorad(direction)) * (size * 1.5) , std::sin(degreetorad(direction)) * (size * 1.5)};
         auto renderer = SDL_GetRenderer(window);
@@ -190,11 +190,11 @@ SDL_Color Snake::find_color(SDL_Window* window, Twod pos) {
     Uint32* pixel = new Uint32;   
     SDL_Color color = { -1, -1, -1, -1 };
 
-    auto renderer = SDL_GetRenderer(window);
-    auto surface = SDL_GetWindowSurface(window);
+    //auto renderer = SDL_GetRenderer(window);
+    //auto surface = SDL_GetWindowSurface(window);
     auto src = SDL_Rect({ int(pos.x), int(pos.y) , 1, 1 });
-    SDL_RenderReadPixels(renderer, &src, SDL_PIXELFORMAT_RGB888, pixel, surface->format->BytesPerPixel);
-    SDL_GetRGB(*pixel, surface->format, &color.r,  &color.g, &color.b);
+    SDL_RenderReadPixels(SDL_GetRenderer(window), &src, SDL_PIXELFORMAT_RGB888, pixel, SDL_GetWindowSurface(window)->format->BytesPerPixel);
+    SDL_GetRGB(*pixel, SDL_GetWindowSurface(window)->format, &color.r,  &color.g, &color.b);
     return color;
 }
 
