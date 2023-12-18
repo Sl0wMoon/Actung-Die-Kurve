@@ -21,6 +21,7 @@ Snake::Snake(int heading, int xposition, int yposition, SDL_Color snake_color, i
     right_key = right;
     left_key = left;
     kurve_anchor = position;
+    add_tail();
 }
 
 
@@ -43,6 +44,7 @@ Snake::Snake() {
     right_key = 79;
     left_key = 80;
     kurve_anchor = position;
+    add_tail();
 }
 
 
@@ -83,6 +85,8 @@ void Snake::move() {
     previous_position = position;
 	position.x += speed.x;
 	position.y += speed.y;
+    tail.pop_back();
+    add_tail();
 }
 
 
