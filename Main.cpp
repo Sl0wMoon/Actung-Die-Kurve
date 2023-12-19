@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     bool ingame = true;
     bool paused = true;
-    float fps = 60;
+    float fps = 120;
     float delta_fps = 1000.0f / fps;
     while (ingame == true) {
         int frame_time_start = SDL_GetTicks();
