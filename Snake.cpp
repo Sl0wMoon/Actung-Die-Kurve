@@ -173,17 +173,15 @@ Twod Snake::get_pos() {
 
 
 void Snake::check_collision(SDL_Window* window, Uint32* pixel) {
-    for (int i = 0; i <= 1; i += 2) {
+    for (int i = -1; i <= 1; i ++) {
         int direction = 360 * i/5 + heading;
-        Twod check_vect = { std::cos(degreetorad(direction)) * (size * 2) , std::sin(degreetorad(direction)) * (size * 2)};
+        Twod check_vect = { std::cos(degreetorad(direction)) * (size * 1.5) , std::sin(degreetorad(direction)) * (size * 1.5)};
         auto renderer = SDL_GetRenderer(window);
         SDL_Color color = find_color(window, { position.x + check_vect.x , position.y + check_vect.y }, pixel);
         if (color.r != 0 || color.g != 0 || color.b != 0) {
             alive = false;
             return;
         }
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderDrawPoint(renderer, position.x + check_vect.x, position.y + check_vect.y);
     }
 }
 
@@ -191,11 +189,8 @@ void Snake::check_collision(SDL_Window* window, Uint32* pixel) {
 
 SDL_Color Snake::find_color(SDL_Window* window, Twod pos, Uint32* pixel) {
     SDL_Color color = { 0, 0, 0, 255 };
-    int offset = pos.x + pos.y * 1600;
+    int offset = int(pos.x) + int(pos.y) * 1600;
     SDL_GetRGB(pixel[offset], SDL_GetWindowSurface(window)->format, &color.r, &color.g, &color.b);
-    if (color.r != 0 || color.g != 0 || color.b != 0) {
-        std::cout << "weird";
-    }
     return color;
 }
 

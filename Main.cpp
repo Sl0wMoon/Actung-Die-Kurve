@@ -19,18 +19,25 @@ int main(int argc, char* argv[]) {
     Collision_manager collision_manager;
 
     Snake achtung(-4, distribution(gen), distribution(gen), {255, 0,0 ,255}, SDL_SCANCODE_LEFT, SDL_SCANCODE_RIGHT);
-    /*Snake kessel(distribution(gen), distribution(gen), distribution(gen), {0, 0,255 ,255}, SDL_SCANCODE_A, SDL_SCANCODE_D);
+    Snake kessel(distribution(gen), distribution(gen), distribution(gen), {0, 0,255 ,255}, SDL_SCANCODE_A, SDL_SCANCODE_D);
     Snake slow(distribution(gen), distribution(gen), distribution(gen), {0, 255,0 ,255}, SDL_SCANCODE_A, SDL_SCANCODE_D);
     Snake slow2(distribution(gen), distribution(gen), distribution(gen), {0, 255,0 ,255}, SDL_SCANCODE_A, SDL_SCANCODE_D);
-    Snake slow3(distribution(gen), distribution(gen), distribution(gen), {0, 255,0 ,255}, SDL_SCANCODE_A, SDL_SCANCODE_D);*/
+    Snake slow3(distribution(gen), distribution(gen), distribution(gen), {0, 255,0 ,255}, SDL_SCANCODE_A, SDL_SCANCODE_D);
     std::vector<Snake> snake_vector;
     snake_vector.push_back(achtung);
-    /*snake_vector.push_back(kessel);
+    snake_vector.push_back(kessel);
     snake_vector.push_back(slow);
     snake_vector.push_back(slow2);
-    snake_vector.push_back(slow3);*/
+    snake_vector.push_back(slow3);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+    for (int i = 0; i < 5; i++) {
+        SDL_Rect piss_border_rect = { 0 + i, 0 + i, 1600 + -2 * i, 900 + -2 * i };
+        SDL_RenderDrawRect(renderer, &piss_border_rect);
+    }
+
+
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     bool ingame = true;
     bool paused = true;
