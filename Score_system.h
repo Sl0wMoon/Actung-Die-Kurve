@@ -29,5 +29,6 @@ private:
 	void add_player(SDL_Color incolor, std::string inname);
 public:
 	Score_system();
+	void init_round();
 };
 

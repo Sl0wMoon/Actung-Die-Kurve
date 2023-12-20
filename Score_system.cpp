@@ -9,6 +9,7 @@ void Score_system::add_score(SDL_Color color) {
 	for (auto it = players.begin(); it != players.end(); it++) {
 		if (it->color.r == color.r && it->color.g == color.g && it->color.b == color.b) {
 			it->score += score_to_add;
+			score_to_add++;
 			return;
 		}
 	}
@@ -19,4 +20,9 @@ void Score_system::add_score(SDL_Color color) {
 void Score_system::add_player(SDL_Color incolor, std::string inname) {
 	players.push_back({ incolor, inname });
 	return;
+}
+
+
+void Score_system::init_round() {
+	score_to_add = 0;
 }
