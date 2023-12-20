@@ -66,6 +66,7 @@ public:
 	void move();
 	int get_turn();
 	Twod get_pos();
+	SDL_Color get_color();
 	void draw_snake(SDL_Renderer* renderer);
 };
 

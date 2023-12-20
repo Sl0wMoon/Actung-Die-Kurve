@@ -253,3 +253,8 @@ void Snake::handle_stop_draw(SDL_Renderer* renderer, int tick) {
     }
     return;
 }
+
+
+SDL_Color Snake::get_color() {
+    return trail_color;
+}

@@ -17,8 +17,8 @@ void Score_system::add_score(SDL_Color color) {
 }
 
 
-void Score_system::add_player(SDL_Color incolor, std::string inname) {
-	players.push_back({ incolor, inname });
+void Score_system::add_player(SDL_Color incolor, std::string inname, int left, int right) {
+	players.push_back({ incolor, inname ,left, right});
 	return;
 }
 
