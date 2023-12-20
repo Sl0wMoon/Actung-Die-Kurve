@@ -240,3 +240,16 @@ void Snake::draw_rotated_rect(SDL_Renderer* renderer, SDL_Rect rect, double angl
     SDL_RenderCopyEx(renderer, filledTexture, nullptr, &dstRect, angle, &rotationPoint, SDL_FLIP_NONE);
 }
 
+
+void Snake::handle_stop_draw(SDL_Renderer* renderer, int tick) {
+    int modnum = tick % 300;
+    if (modnum == 270) {
+        stop_draw(renderer);
+        return;
+    }
+    if (modnum == 0) {
+        start_draw(renderer);
+        return;
+    }
+    return;
+}

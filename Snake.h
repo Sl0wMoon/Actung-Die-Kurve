@@ -62,6 +62,7 @@ public:
 	void turn_fwd();
 	int size;
 	const bool is_alive();
+	void handle_stop_draw(SDL_Renderer* renderer, int tick);
 	void move();
 	int get_turn();
 	Twod get_pos();
