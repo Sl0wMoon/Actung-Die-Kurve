@@ -34,16 +34,16 @@ private:
 	int left_key;
 	int right_key;
 	bool alive;
-	int heading;
-	double degreetorad(int degree);
+	double heading;
+	double degreetorad(double degree);
 	Twod position;
 	Twod previous_position;
 	float amplitude;
 	Twod speed;
-	int steer_amount;
-	int steer_multiplier;
+	double steer_amount;
+	double steer_multiplier;
 
-	Twod make_heading_vect(int heading);
+	Twod make_heading_vect(double heading);
 
 	void draw_rotated_rect(SDL_Renderer* renderer, SDL_Rect rect, double angle);
 	void stop_draw(SDL_Renderer * renderer);

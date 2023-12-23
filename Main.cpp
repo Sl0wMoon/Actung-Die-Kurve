@@ -30,9 +30,14 @@ int main(int argc, char* argv[]) {
 
     score_system.add_player({ 255 , 0 , 0 , 255 }, "achtung", SDL_SCANCODE_LEFT, SDL_SCANCODE_RIGHT);
     score_system.add_player({ 0 , 255 , 0 , 255 } , "kessel", SDL_SCANCODE_A, SDL_SCANCODE_D);
+    //score_system.add_player({ 0 , 255 , 255 , 255 } , "slowmoon", SDL_SCANCODE_A, SDL_SCANCODE_D);
     auto players = score_system.get_players();
+
     while (ingame == true) { //loop for game
         paused = true;
+
+        players = score_system.get_players();
+        std::cout << players[0].score << ' ' << players[1].score << std::endl;
 
         std::vector<Snake> snake_vector;
         for (auto it = players.begin(); it != players.end(); it++) {
@@ -48,7 +53,7 @@ int main(int argc, char* argv[]) {
             SDL_RenderDrawRect(renderer, &piss_border_rect);
         }
 
-        score_system.init_round();
+        score_system.init_round(renderer);
         while (ingame == true) { //loop for round
             int frame_time_start = SDL_GetTicks();
             while (SDL_PollEvent(&event)) {
@@ -70,8 +75,8 @@ int main(int argc, char* argv[]) {
                 snake_vector[i].handle_stop_draw(renderer, tick);
                 snake_vector[i].check_collision(window, collision_manager.get_pixels());
                 if (!snake_vector[i].is_alive()) {
-                    snake_vector.erase(snake_vector.begin() + i);
                     score_system.add_score(snake_vector[i].get_color());
+                    snake_vector.erase(snake_vector.begin() + i);
                     continue;
                 }
                 snake_vector[i].draw_snake(renderer);
@@ -80,13 +85,13 @@ int main(int argc, char* argv[]) {
                 SDL_Delay(delta_fps - (SDL_GetTicks() - frame_time_start));
             }
             tick++;
-            SDL_RenderPresent(renderer);
             if (snake_vector.size() == 1) {
                 score_system.add_score(snake_vector[0].get_color());
             }
-            if (snake_vector.size() < 1) {
+            if (snake_vector.size() <= 1) {
                 paused = !paused;
             }
+            SDL_RenderPresent(renderer);
             while (paused && ingame) {
                 while (SDL_PollEvent(&event)) {
                     switch (event.type) {

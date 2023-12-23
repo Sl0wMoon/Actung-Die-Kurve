@@ -9,7 +9,7 @@ Snake::Snake(int heading, int xposition, int yposition, SDL_Color snake_color, i
 	position.y = yposition;
     previous_position.x = xposition;
     previous_position.y = yposition;
-	amplitude = 1.5;
+	amplitude = 1.15;
 	speed.x = std::cos(degreetorad(heading)) * amplitude;
 	speed.y = std::sin(degreetorad(heading)) * amplitude;
 	steer_amount = 0;
@@ -31,7 +31,7 @@ Snake::Snake() {
 	position.y = 450;
     previous_position.x = 800;
     previous_position.y = 450;
-	amplitude = 3;
+	amplitude = 1.25;
 	speed.x = std::cos(degreetorad(heading)) * amplitude;
 	speed.y = std::sin(degreetorad(heading)) * amplitude;
 	steer_amount = 0;
@@ -51,18 +51,18 @@ void Snake::steer() {
 }
 
 
-Twod Snake::make_heading_vect(int heading) {
+Twod Snake::make_heading_vect(double heading) {
     return Twod(std::cos(degreetorad(heading)), std::sin(degreetorad(heading)));
 }
 
 
 void Snake::turn_left() {
-	steer_amount = -1 * steer_multiplier;
+	steer_amount = -1.4 * steer_multiplier;
 }
 
 
 void Snake::turn_right() {
-	steer_amount = 1 * steer_multiplier;
+	steer_amount = 1.4 * steer_multiplier;
 }
 
 
@@ -135,7 +135,7 @@ int Snake::draw_circle(SDL_Renderer* renderer, Twod point){
 }
 
 
-double Snake::degreetorad(int degree) {
+double Snake::degreetorad(double degree) {
     double rad = (degree * M_PI) / 180;
     return rad;
 }
@@ -151,7 +151,7 @@ void Snake::draw_snake(SDL_Renderer* renderer) {
 void Snake::stop_draw(SDL_Renderer* renderer) {
     trail_color = { 0, 0, 0, 255 };
     Twod normal = { speed.y * size / amplitude , -speed.x * size / amplitude };
-    SDL_Rect cutoff = { position.x + normal.x*2, position.y + normal.y*2, size * 4, size + amplitude + 3 };
+    SDL_Rect cutoff = { position.x + normal.x*2, position.y + normal.y*2, size * 4.5, size + amplitude + 3.5 };
     draw_rotated_rect(renderer, cutoff, heading);
 }
 
@@ -243,7 +243,7 @@ void Snake::draw_rotated_rect(SDL_Renderer* renderer, SDL_Rect rect, double angl
 
 void Snake::handle_stop_draw(SDL_Renderer* renderer, int tick) {
     int modnum = tick % 300;
-    if (modnum == 270) {
+    if (modnum == 280) {
         stop_draw(renderer);
         return;
     }

@@ -31,11 +31,13 @@ class Score_system
 private:
 	std::vector<Player> players;
 	int score_to_add;
+	void render_score_rect(SDL_Renderer* renderer, SDL_Color color, int x, int y, int x2, int y2);
 public:
 	Score_system();
-	void init_round();
+	void init_round(SDL_Renderer* renderer);
 	void add_player(SDL_Color incolor, std::string inname, int left, int right);
 	void add_score(SDL_Color color);
 	inline std::vector<Player> get_players() { return players; }
+	void render_scores(SDL_Renderer* renderer);
 };
 
