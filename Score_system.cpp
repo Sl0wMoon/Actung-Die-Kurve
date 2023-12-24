@@ -53,3 +53,4 @@ void Score_system::render_score_rect(SDL_Renderer* renderer, SDL_Color color, in
 		SDL_RenderDrawLine(renderer, i, y, i, y2);
 	}
 }
+
